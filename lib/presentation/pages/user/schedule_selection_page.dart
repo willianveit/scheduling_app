@@ -37,16 +37,6 @@ class _ScheduleSelectionPageState extends ConsumerState<ScheduleSelectionPage> {
     return DateFormat('HH:mm').format(date);
   }
 
-  bool _isToday(DateTime date) {
-    final now = DateTime.now();
-    return date.year == now.year && date.month == now.month && date.day == now.day;
-  }
-
-  bool _isTomorrow(DateTime date) {
-    final tomorrow = DateTime.now().add(const Duration(days: 1));
-    return date.year == tomorrow.year && date.month == tomorrow.month && date.day == tomorrow.day;
-  }
-
   @override
   Widget build(BuildContext context) {
     final slotsAsync = ref.watch(slotsStreamProvider(AppConstants.defaultStoreId));
@@ -183,8 +173,6 @@ class _ScheduleSelectionPageState extends ConsumerState<ScheduleSelectionPage> {
                           final dateTime = DateTime.parse(dateKey);
                           final isSelected = _selectedDate == dateKey;
                           final slotCount = slotsByDate[dateKey]?.length ?? 0;
-                          final isToday = _isToday(dateTime);
-                          final isTomorrow = _isTomorrow(dateTime);
 
                           return Padding(
                             padding: const EdgeInsets.only(right: 12),
@@ -395,10 +383,10 @@ class _ScheduleSelectionPageState extends ConsumerState<ScheduleSelectionPage> {
                     : GridView.builder(
                         padding: const EdgeInsets.all(20),
                         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          childAspectRatio: 2.2,
-                          crossAxisSpacing: 12,
-                          mainAxisSpacing: 12,
+                          crossAxisCount: 4,
+                          childAspectRatio: 1.2,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
                         ),
                         itemCount: filteredSlots.length,
                         itemBuilder: (context, index) {
@@ -486,48 +474,76 @@ class _SlotTimeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       elevation: 2,
-      borderRadius: BorderRadius.circular(16),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            gradient: LinearGradient(
-              colors: [Colors.green.shade50, Colors.green.shade100.withOpacity(0.5)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            border: Border.all(color: Colors.green.shade200, width: 1.5),
+      borderRadius: BorderRadius.circular(10),
+      shadowColor: Colors.green.withOpacity(0.2),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          gradient: LinearGradient(
+            colors: [Colors.white, Colors.green.shade50.withOpacity(0.3)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
+          border: Border.all(color: Colors.green.shade300, width: 1),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(6),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Icon(Icons.access_time_rounded, color: Colors.green.shade700, size: 28),
-              const SizedBox(height: 8),
-              Text(
-                time,
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.green.shade900,
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                decoration: BoxDecoration(
+                  color: Colors.green.shade100,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.check_circle, color: Colors.green.shade700, size: 8),
+                    const SizedBox(width: 2),
+                    Text(
+                      'OPEN',
+                      style: TextStyle(
+                        fontSize: 7,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.green.shade800,
+                        letterSpacing: 0.2,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 4),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                decoration: BoxDecoration(
-                  color: Colors.green.shade700,
-                  borderRadius: BorderRadius.circular(12),
+              Column(
+                children: [
+                  Icon(Icons.access_time_rounded, color: Colors.green.shade700, size: 20),
+                  const SizedBox(height: 2),
+                  Text(
+                    time,
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.green.shade900,
+                      letterSpacing: -0.2,
+                    ),
+                  ),
+                ],
+              ),
+              ElevatedButton(
+                onPressed: onTap,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green.shade600,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 6),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                  elevation: 1,
+                  minimumSize: const Size(0, 0),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
                 child: const Text(
-                  'AVAILABLE',
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    letterSpacing: 0.5,
-                  ),
+                  'Book',
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 0.2),
                 ),
               ),
             ],
