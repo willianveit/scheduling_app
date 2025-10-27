@@ -1280,6 +1280,7 @@ class _AvailabilityManagementPageState extends ConsumerState<AvailabilityManagem
       });
     }
   }
+
 }
 
 class _QuickActionChip extends StatelessWidget {

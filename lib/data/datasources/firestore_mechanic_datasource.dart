@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:scheduling_app/data/models/mechanic_model.dart';
+import 'package:scheduling_app/domain/entities/mechanic_availability.dart';
 
 class FirestoreMechanicDatasource {
   final FirebaseFirestore firestore;
@@ -34,6 +35,28 @@ class FirestoreMechanicDatasource {
       await _getMechanicsCollection().doc(mechanic.id).set(mechanic.toFirestore());
     } catch (e) {
       throw Exception('Failed to create mechanic: $e');
+    }
+  }
+
+  Future<void> updateMechanic(MechanicModel mechanic) async {
+    try {
+      await _getMechanicsCollection().doc(mechanic.id).update(mechanic.toFirestore());
+    } catch (e) {
+      throw Exception('Failed to update mechanic: $e');
+    }
+  }
+
+  Future<void> updateMechanicAvailability(
+    String mechanicId,
+    List<DayAvailability> availability,
+  ) async {
+    try {
+      await _getMechanicsCollection().doc(mechanicId).update({
+        'availability': availability.map((a) => a.toJson()).toList(),
+        'availabilityUpdatedAt': Timestamp.fromDate(DateTime.now()),
+      });
+    } catch (e) {
+      throw Exception('Failed to update mechanic availability: $e');
     }
   }
 
